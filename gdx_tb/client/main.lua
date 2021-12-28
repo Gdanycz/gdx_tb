@@ -27,7 +27,7 @@ local spatula_net = nil
 
 Citizen.CreateThread(function()
 	while ESX == nil do
-		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		TriggerEvent(Config.GetSharedObject, function(obj) ESX = obj end)
 		Citizen.Wait(0)
 	end
 end)
@@ -36,16 +36,14 @@ end)
 Citizen.CreateThread(function()
 	Citizen.Wait(8000) --Wait for mysql-async
 	source = GetPlayerServerId(PlayerId())
-	TriggerServerEvent('gdx_tb:checkIfSentenced', source)
-	print("kontroluji tb")
+	TriggerServerEvent("gdx_tb:checkIfSentenced", source)
 end)
 
-RegisterNetEvent('esx:playerLoaded')
-AddEventHandler('esx:playerLoaded', function(playerData)
+RegisterNetEvent("esx:playerLoaded")
+AddEventHandler("esx:playerLoaded", function(playerData)
 	Citizen.Wait(8000) --Wait for mysql-async
 	source = GetPlayerServerId(PlayerId())
-	TriggerServerEvent('gdx_tb:checkIfSentenced', source)
-	print("kontroluji tb po připojení")
+	TriggerServerEvent("gdx_tb:checkIfSentenced", source)
 end)
 
 
@@ -78,8 +76,8 @@ function FillActionTable(last_action)
 end
 
 
-RegisterNetEvent('gdx_tb:inTO')
-AddEventHandler('gdx_tb:inTO', function(actions_remaining)
+RegisterNetEvent("gdx_tb:inTB")
+AddEventHandler("gdx_tb:inTB", function(actions_remaining)
 	local playerPed = PlayerPedId()
 
 	if isSentenced then
@@ -89,7 +87,7 @@ AddEventHandler('gdx_tb:inTO', function(actions_remaining)
 	actionsRemaining = actions_remaining
 
 	FillActionTable()
-	print(":: Available Actions: " .. #availableActions)
+	writeConsole(":: Available Actions "..#availableActions)
 
 
 
@@ -109,26 +107,26 @@ AddEventHandler('gdx_tb:inTO', function(actions_remaining)
 
 		if GetDistanceBetweenCoords(GetEntityCoords(playerPed), Config.ServiceLocation.x, Config.ServiceLocation.y, Config.ServiceLocation.z) > 80 then
 			ESX.Game.Teleport(playerPed, Config.ServiceLocation)
-				TriggerEvent('chat:addMessage', { args = { _U('judge'), _U('escape_attempt') }, color = { 147, 196, 109 } })
-				TriggerServerEvent('gdx_tb:extendTO')
+				TriggerEvent("chat:addMessage", { args = { _U('judge'), _U('escape_attempt') }, color = { 147, 196, 109 } })
+				TriggerServerEvent("gdx_tb:extendTB")
 				actionsRemaining = actionsRemaining + Config.ServiceExtensionOnEscape
 		end
 
 	end
 
-	TriggerServerEvent('gdx_tb:finishTO', -1)
+	TriggerServerEvent("gdx_tb:finishTB", -1)
 	ESX.Game.Teleport(playerPed, Config.ReleaseLocation)
 	isSentenced = false
 
-	ESX.TriggerServerCallback('esx_skin:getPlayerSkin', function(skin)
-		TriggerEvent('skinchanger:loadSkin', skin)
+	ESX.TriggerServerCallback("esx_skin:getPlayerSkin", function(skin)
+		TriggerEvent("skinchanger:loadSkin", skin)
 		end)
 end)
 
 
 
-RegisterNetEvent('gdx_tb:finishTO')
-AddEventHandler('gdx_tb:finishTO', function(source)
+RegisterNetEvent("gdx_tb:finishTB")
+AddEventHandler("gdx_tb:finishTB", function(source)
 	communityServiceFinished = true
 	isSentenced = false
 	actionsRemaining = 0
@@ -154,14 +152,13 @@ Citizen.CreateThread(function()
 				if distance < 1.5 then
 					DisplayHelpText(_U('press_to_start'))
 
-
 					if(IsControlJustReleased(1, 38))then
 						tmp_action = availableActions[i]
 						RemoveAction(tmp_action)
 						FillActionTable(tmp_action)
 						disable_actions = true
 
-						TriggerServerEvent('gdx_tb:completeTO')
+						TriggerServerEvent("gdx_tb:completeTB")
 						actionsRemaining = actionsRemaining - 1
 
 						if (tmp_action.type == "cleaning") then
@@ -182,7 +179,6 @@ Citizen.CreateThread(function()
 									vassour_net = nil
 									ClearPedTasks(PlayerPedId())
 								end)
-
 						end
 
 						if (tmp_action.type == "gardening") then
@@ -213,7 +209,6 @@ Citizen.CreateThread(function()
 	end
 end)
 
-
 function RemoveAction(action)
 
 	local action_pos = -1
@@ -227,40 +222,28 @@ function RemoveAction(action)
 	if action_pos ~= -1 then
 		table.remove(availableActions, action_pos)
 	else
-		print("User tried to remove an unavailable action")
+		writeConsole("User tried to remove an unavailable action")
 	end
 
 end
 
-
-
-
-
-
-
 function DisplayHelpText(str)
 	SetTextComponentFormat("STRING")
-	AddTextComponentString(str)
+	if Config.UseCustomFont then
+	    AddTextComponentString("<font face='"..Config.FontName.."'>"..str.."</font>")
+	else
+	    AddTextComponentString(str)
+	end
 	DisplayHelpTextFromStringLabel(0, 0, 1, -1)
 end
-
 
 function DrawAvailableActions()
 
 	for i = 1, #availableActions do
---{ r = 50, g = 50, b = 204 }
-		--DrawMarker(21, Config.ServiceLocations[i].coords, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.5, 255, 0, 0, 100, false, true, 2, true, false, false, true)
 		DrawMarker(21, availableActions[i].coords, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.5, 0.5, 50, 50, 204, 100, false, true, 2, true, false, false, false)
-
-		--DrawMarker(20, Config.ServiceLocations[i].coords, -1, 0.0, 0.0, 0, 0.0, 0.0, 1.0, 1.0, 1.0, 0, 162, 250, 80, true, true, 2, 0, 0, 0, 0)
 	end
 
 end
-
-
-
-
-
 
 function DisableViolentActions()
 
@@ -269,8 +252,6 @@ function DisableViolentActions()
 	if disable_actions == true then
 		DisableAllControlActions(0)
 	end
-
-	--RemoveAllPedWeapons(playerPed, true)
 
 	DisableControlAction(2, 37, true) -- disable weapon wheel (Tab) -- TAB
 	DisablePlayerFiring(playerPed,true) -- Disables firing all together if they somehow bypass inzone Mouse Disable
@@ -323,9 +304,8 @@ function ApplyPrisonerSkin()
 	end
 end
 
-
 function draw2dText(text, pos)
-	SetTextFont(4)
+	SetTextFont(Config.FontId or 4)
 	SetTextProportional(1)
 	SetTextScale(0.45, 0.45)
 	SetTextColour(255, 255, 255, 255)
@@ -335,6 +315,14 @@ function draw2dText(text, pos)
 	SetTextOutline()
 
 	BeginTextCommandDisplayText('STRING')
-	AddTextComponentSubstringPlayerName(text)
+	if Config.UseCustomFont then
+        AddTextComponentSubstringPlayerName("<font face='"..Config.FontName.."'>"..text.."</font>")
+	else
+	    AddTextComponentSubstringPlayerName(text)
+	end
 	EndTextCommandDisplayText(table.unpack(pos))
+end
+
+function writeConsole(text)
+    print("^2["..Config.Resource.."] ^0"..text)
 end

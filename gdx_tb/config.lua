@@ -1,10 +1,15 @@
 Config = {}
 
-Config.Locale = 'en'
+Config.Resource = GetCurrentResourceName()
+Config.GetSharedObject = "esx:getSharedObject"
+Config.UseCustomFont = false -- enable or disable use your custom font
+Config.FontId = 4 -- set your font id
+Config.FontName = "Fire Sans" -- set your custom font name
+Config.Locale = "en" -- set your locale | en, cs, other
 Config.DiscordWebhook = "discord_webhook_here"
-Config.ServiceExtensionOnEscape = 2 -- O kolik se prodlouží trestné body, pokud se hráč pokusí o útěk
-Config.ServiceLocation = {x =  -2168.57, y = 5197.93, z = 17.02} -- Místo spawnu na ostrově
-Config.ReleaseLocation				= {x = -1605.54, y = 5258.72, z = 2.68} -- Místo spawnu po dokončení trestných bodů
+Config.ServiceExtensionOnEscape = 2 -- how many penalty points will be extended if the player tries to escape
+Config.ServiceLocation = {x =  -2168.57, y = 5197.93, z = 17.02} -- the spawn point on the island
+Config.ReleaseLocation = {x = -1605.54, y = 5258.72, z = 2.68} -- instead of spawning after completing penalty points
 Config.ServiceLocations = {
 	{ type = "cleaning", coords = vector3(-2168.7763671875, 5275.2568359375, 18.405973434448) },
 	{ type = "cleaning", coords = vector3(-2169.4523925781, 5275.0698242188, 18.457084655762) },

@@ -1,9 +1,13 @@
 fx_version 'adamant'
-games { 'gta5' }
+game 'gta5'
+
+author 'Gdany#2835'
+description 'Script to punish players instead of banning'
+version '1.0.0'
 
 client_scripts {
 	'@es_extended/locale.lua',
-	'locales/*.lua',
+	'lang.lua',
 	'config.lua',
 	'client/main.lua'
 }
@@ -11,9 +15,14 @@ client_scripts {
 server_scripts {
 	'@mysql-async/lib/MySQL.lua',
 	'@es_extended/locale.lua',
-	'locales/*.lua',
+	'lang.lua',
 	'config.lua',
 	'server/main.lua'
 }
 
-dependency 'es_extended'
+dependencies {
+    'es_extended',
+    'mysql_async',
+    'esx_skin',
+    'skinchanger'
+}

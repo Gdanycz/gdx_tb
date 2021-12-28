@@ -1,4 +1,4 @@
-CREATE TABLE trestnebody (
+CREATE TABLE penalty_points (
 	identifier VARCHAR(100) NOT NULL,
 	actions_remaining int(10) NOT NULL,
 	PRIMARY KEY (identifier)

@@ -1,20 +1,21 @@
 # gdx_tb
-Script na potrestnání hráčů místo banu
+Script to punish players instead of banning
 
-### Funkce:
-- Odeslaní hráče na ostrov, kde musí udělat určitý počet prácí
-- Obnova prácí, když se hráč odpojí a připojí
+Created from this script `esx_communityservice`
+
+### Features:
+- Sending a player to an island where they must do a certain number of jobs
+- Resume work when the player disconnects and reconnects
 - Discord log
 
-### Požadavky:
+### Requirements:
 - es_extended
-- essentialmode (pro cmd, lze předělat na esx)
 - mysql-async
 - esx_skin
 - skinchanger
 
-### Instalace:
-- Vložte `gdx_tb` do `resources`
-- Importujte `gdx_tb.sql` do databáze
-- Do `server.cfg` vložte `ensure gdx_tb`
-- Nastavte webhook a čísla oblečení v `config.lua`
+### Install:
+- Put `gdx_tb` into `resources`
+- Import `gdx_tb.sql` into the database
+- Insert `ensure gdx_tb` into `server.cfg`
+- Set webhook and outfit numbers in `config.lua`
